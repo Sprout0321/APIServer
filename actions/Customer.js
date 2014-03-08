@@ -11,13 +11,26 @@ exports.CreateCustomer = {
 			email : connection.params.email,
 			password: connection.params.password
 		}
-		api.service.customer.Create(params, function(error, result){
+		api.service.customer.Get(params, function(error, result){
 			if(error){
 				connection.error = error ;
 				return next(connection, true);
 			}else{
-				connection.response = result;
-				return next(connection, true);
+				if(result.Count===1){
+					connection.response = "same email";
+					return next(connection, true);
+				}
+				else{
+					api.service.customer.Create(params, function(error, result){
+						if(error){
+							connection.error = error ;
+							return next(connection, true);
+						}else{
+							connection.response = result;
+							return next(connection, true);
+						}
+					});
+				}
 			}
 		});
 	}
@@ -36,13 +49,18 @@ exports.GetCustomer = {
 			email : connection.params.email,
 			password: connection.params.password
 		}
-		api.service.customer.Get(params, function(error, result){
+		api.service.customer.GetLogin(params, function(error, result){
 			if(error){
 				connection.error = error ;
 				return next(connection, true);
 			}else{
-				connection.response = result;
-				return next(connection, true);
+				if(result.Count===1){
+					connection.response = "OK";
+					return next(connection, true);
+				}else{
+					connection.response = "NO";
+					return next(connection, true);
+				}
 			}
 		});
 	}
