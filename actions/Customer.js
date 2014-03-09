@@ -9,7 +9,9 @@ exports.CreateCustomer = {
 	run: function(api, connection, next){
 		var params = {
 			email : connection.params.email,
-			password: connection.params.password
+			password: connection.params.password,
+			action:'create',
+			auth : connection.rawConnection.req.headers.authorization
 		}
 		api.service.customer.Get(params, function(error, result){
 			if(error){
@@ -47,9 +49,11 @@ exports.GetCustomer = {
 	run: function(api, connection, next){
 		var params = {
 			email : connection.params.email,
-			password: connection.params.password
+			password: connection.params.password,
+			action:'login',
+			auth : connection.rawConnection.req.headers.authorization
 		}
-		api.service.customer.GetLogin(params, function(error, result){
+		api.service.customer.Get(params, function(error, result){
 			if(error){
 				connection.error = error ;
 				return next(connection, true);
