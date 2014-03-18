@@ -58,13 +58,37 @@ exports.GetCustomer = {
 				connection.error = error ;
 				return next(connection, true);
 			}else{
-				if(result.Count===1){
-					connection.response = "OK";
-					return next(connection, true);
-				}else{
-					connection.response = "NO";
-					return next(connection, true);
-				}
+				if(result.Count===1) result.state = 'YES';
+				else result.state = 'NO' ;
+				connection.response = result;
+				return next(connection, true);
+			}
+		});
+	}
+}
+exports.UpdateCustomer = {
+	name: 'UpdateCustomer',
+	description: 'Update customer in customer table using in CMS',
+	version:1.0,
+	inputs:{
+		required: ['cusindex','customerid','email','password'],
+		optional:[],
+	},
+	run: function(api, connection, next){
+		var params = {
+			cusindex : connection.params.cusindex,
+			customerid : connection.params.customerid,
+			email : connection.params.email,
+			password : connection.params.password,
+			auth : connection.rawConnection.req.headers.authorization
+		}
+		api.service.customer.Update(params, function(error, result){
+			if(error){
+				connection.error = error ;
+				return next(connection, true);
+			}else{
+				connection.response = result ;
+				return next(connection, true);
 			}
 		});
 	}
