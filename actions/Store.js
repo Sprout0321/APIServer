@@ -77,15 +77,28 @@ exports.GetStore = {
 			password : connection.params.password,
 			auth : connection.rawConnection.req.headers.authorization
 		}
-		api.service.store.Get(params, function(error, result){
+		api.service.store.Get(params, function(error, loginResult){
 			if(error){
 				connection.error = error ;
 				return next(connection, true);
 			}else{
-				if(result.Count===1) result.state = 'YES' ;
-				else result.state = 'NO' ;
-				connection.response = result;
-				return next(connection, true);
+				if(loginResult.Count===1){
+					api.service.store.GetStore(loginResult.storeid, function(error, result){
+						if(error){
+							connection.error = error ;
+							return next(connection, true);
+						}else{
+							loginResult.name = result.name ;
+							connection.response = loginResult ;
+							return next(connection, true); 
+						}
+					});	
+				} 
+				else{
+					result.state = 'NO';
+					connection.response = result ;
+					return next(connection, true);
+				} 
 			}
 		});
 	}
