@@ -20,7 +20,7 @@ exports.CreateCustomer = {
 			}else{
 				if(result.Count===1){
 					var res = {
-						custeomrid : "same email"
+						customerid : "same email"
 					}
 					connection.response = res;
 					return next(connection, true);
